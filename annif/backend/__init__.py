@@ -97,6 +97,24 @@ def _yake() -> Type[AnnifBackend]:
         raise ValueError("YAKE not available, cannot use yake backend")
 
 
+def _minilmv2() -> Type[AnnifBackend]:
+    try:
+        from . import minilmv2
+
+        return minilmv2.MiniLmV2Backend
+    except ImportError:
+        raise ValueError("MiniLMv2 not available, cannot use minilmv2 backend")
+
+
+def _xlmroberta() -> Type[AnnifBackend]:
+    try:
+        from . import xlmroberta
+
+        return xlmroberta.XlmRobertaBackend
+    except ImportError:
+        raise ValueError("XlmRoberta not available, cannot use xlmroberta backend")
+
+
 # registry of the above functions
 _backend_fns = {
     "dummy": _dummy,
@@ -111,6 +129,8 @@ _backend_fns = {
     "svc": _svc,
     "tfidf": _tfidf,
     "yake": _yake,
+    "xlmroberta": _xlmroberta,
+    "minilmv2": _minilmv2,
 }
 
 
