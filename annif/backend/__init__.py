@@ -102,7 +102,8 @@ def _minilmv2() -> Type[AnnifBackend]:
         from . import minilmv2
 
         return minilmv2.MiniLmV2Backend
-    except ImportError:
+    except ImportError as e:
+        print(e.print_stack())
         raise ValueError("MiniLMv2 not available, cannot use minilmv2 backend")
 
 
