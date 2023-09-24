@@ -103,7 +103,6 @@ def _minilmv2() -> Type[AnnifBackend]:
 
         return minilmv2.MiniLmV2Backend
     except ImportError as e:
-        print(e.print_stack())
         raise ValueError("MiniLMv2 not available, cannot use minilmv2 backend")
 
 
@@ -114,6 +113,15 @@ def _xlmroberta() -> Type[AnnifBackend]:
         return xlmroberta.XlmRobertaBackend
     except ImportError:
         raise ValueError("XlmRoberta not available, cannot use xlmroberta backend")
+
+
+def _ehribert() -> Type[AnnifBackend]:
+    try:
+        from . import ehribert
+
+        return ehribert.EhriBertBackend
+    except ImportError:
+        raise ValueError("EhriBert not available, cannot use ehribert backend")
 
 
 # registry of the above functions
@@ -132,6 +140,7 @@ _backend_fns = {
     "yake": _yake,
     "xlmroberta": _xlmroberta,
     "minilmv2": _minilmv2,
+    "ehribert": _ehribert,
 }
 
 
