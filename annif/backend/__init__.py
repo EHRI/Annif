@@ -115,6 +115,15 @@ def _xlmroberta() -> Type[AnnifBackend]:
         raise ValueError("XlmRoberta not available, cannot use xlmroberta backend")
 
 
+def _mdeberta() -> Type[AnnifBackend]:
+    try:
+        from . import mdeberta
+
+        return mdeberta.MDeBertaBackend
+    except ImportError:
+        raise ValueError("MDeBERTa not available, cannot use mdeberta backend")
+
+
 def _ehribert() -> Type[AnnifBackend]:
     try:
         from . import ehribert
@@ -141,6 +150,7 @@ _backend_fns = {
     "xlmroberta": _xlmroberta,
     "minilmv2": _minilmv2,
     "ehribert": _ehribert,
+    "mdeberta": _mdeberta,
 }
 
 

@@ -2,24 +2,25 @@ from typing import Union, Any
 
 from . import backend
 from . import transformer
-from annif.suggestion import SubjectSuggestion, SuggestionBatch
+from annif.corpus.types import DocumentCorpus
+from annif.suggestion import SubjectSuggestion
 
 
-class MiniLmV2Backend(transformer.BaseTransformerBackend):
-    """Recogniser using the MiniLMv2 model from Huggingface Transformers"""
-    name = "minilmv2"
+class MDeBertaBackend(transformer.BaseTransformerBackend):
+    """Recogniser using the """
+    name = "mdeberta"
     initialized = False
     is_trained = True
+    subject_id = 0
     modification_time = None
 
     def initialize(self, parallel: bool = False) -> None:
         super().initialize(parallel)
         from transformers import pipeline
-        model = "MoritzLaurer/multilingual-MiniLMv2-L6-mnli-xnli"
+        model = "MoritzLaurer/mDeBERTa-v3-base-mnli-xnli"
 
         from torch import cuda
         device = 0 if cuda.is_available() else -1
-        self._zs = pipeline("zero-shot-classification", model=model, device=device, use_auth_token=True)
+        self._zs = pipeline("zero-shot-classification", model=model, device=device, use_auth_token=True, use_fast=False)
 
         self.initialized = True
-
