@@ -29,6 +29,8 @@ class BaseTransformerBackend(backend.AnnifBackend):
             return []
 
         results = self._zs(texts, candidate_labels=list(self._terms.values()), multi_label=num > 1)
+        for r in results:
+            print(r)
 
         def suggestions(result):
             num_results = len(result["labels"])
