@@ -1,6 +1,7 @@
 import json
 import os
 from os.path import dirname
+from typing import Any
 
 import numpy as np
 import torch
@@ -51,8 +52,10 @@ class EhriBertBackend(transformer.BaseTransformerBackend):
         self._config = AutoConfig.from_pretrained(model_path)
         self.initialized = True
 
-    def run_pipeline(self, texts: list[str], num: int = 10):
+    def run_pipeline(self, texts: list[str], params: dict[str, Any] = None, num: int = 10):
         results = []
+
+        threshold = float(params.get("threshold", 0.0))
 
         for text in texts:
             encoding = self._tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512)
@@ -61,7 +64,6 @@ class EhriBertBackend(transformer.BaseTransformerBackend):
             outputs = self._model(**encoding)
             logits = outputs.logits
 
-            threshold = 0.0
             id2label = self._config.id2label
             sigmoid = torch.nn.Sigmoid()
             probs = sigmoid(logits.squeeze().cpu())

@@ -1,5 +1,5 @@
 
-from typing import Any, Union, TYPE_CHECKING
+from typing import Any, Union, TYPE_CHECKING, Dict
 from . import backend
 
 from annif.project import AnnifProject
@@ -20,7 +20,12 @@ class BaseTransformerBackend(backend.AnnifBackend):
         self._terms_rev = {v: k for k, v in self._terms.items()}
 
 
-    def run_pipeline(self, texts: list[str], num: int = 10) -> list[Union[tuple[str, str, float], None]]:  # (concept_id, concept_text, confidence)
+    def run_pipeline(
+            self,
+            texts: list[str],
+            params: dict[str, Any] | None = None,
+            num: int = 10,
+    ) -> list[list[Union[tuple[str, str, float]], None]]:  # (concept_id, concept_text, confidence)
         """Recognise a term from the vocabulary in the given text
         :param text: Text to recognise
         :return: (concept_id, concept_text, confidence) or None if no match
@@ -42,7 +47,7 @@ class BaseTransformerBackend(backend.AnnifBackend):
 
         num = int(params.get("limit"))
 
-        text_suggestions = self.run_pipeline(texts, num=num)
+        text_suggestions = self.run_pipeline(texts, num=num, params=params)
 
         def mksuggestion(uri, text, score):
             return SubjectSuggestion(subject_id=self.project.subjects.by_uri(uri), score=score)
