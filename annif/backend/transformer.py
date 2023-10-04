@@ -33,13 +33,13 @@ class BaseTransformerBackend(backend.AnnifBackend):
         if len(texts) == 0:
             return []
 
+        threshold = float(params.get("threshold", 0.0))
         results = self._zs(texts, candidate_labels=list(self._terms.values()), multi_label=num > 1)
-        for r in results:
-            print(r)
 
         def suggestions(result):
             num_results = len(result["labels"])
-            return [(self._terms_rev[result["labels"][i]], result["labels"][i], result["scores"][i]) for i in range(min(num, num_results))]
+            return [(self._terms_rev[result["labels"][i]], result["labels"][i], result["scores"][i]) 
+                    for i in range(min(num, num_results)) if result["scores"][i] > threshold]
 
         return [suggestions(r) for r in results]
 
