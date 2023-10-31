@@ -43,18 +43,31 @@ class BaseTransformerBackend(backend.AnnifBackend):
 
         return [suggestions(r) for r in results]
 
-    def _suggest_batch(self, texts: list[str], params: dict[str, Any]) -> list[SubjectSuggestion]:
+    def _suggest_batch(self, texts: list[str], params: dict[str, Any]) -> list[SubjectSuggestion]|SuggestionBatch:
+
+        if len(texts) == 0:
+            return []
 
         num = int(params.get("limit"))
 
-        text_suggestions = self.run_pipeline(texts, num=num, params=params)
+        # Empty texts must return an empty suggestion batch but the pipeline
+        # will error, so we need to remove the empty values and then reinsert
+        # an empty SuggestionBatch for empty texts
+        non_empty = [text for text in texts if text.strip() != ""]
+        non_empty_indices = [i for i, text in enumerate(texts) if text.strip() != ""]
+        text_suggestions = self.run_pipeline(non_empty, num=num, params=params)
 
-        def mksuggestion(uri, text, score):
+        def make_suggestion(uri, score):
             return SubjectSuggestion(subject_id=self.project.subjects.by_uri(uri), score=score)
 
         batch = []
         for i, suggestions in enumerate(text_suggestions):
-            batch.append([mksuggestion(uri, text, score) for uri, text, score in suggestions])
+            batch.append([make_suggestion(uri, score) for uri, _, score in suggestions])
+
+        # reinsert an empty SuggestionBatch for empty texts
+        for i in range(len(texts)):
+            if i not in non_empty_indices:
+                batch.insert(i, [])
 
         return SuggestionBatch.from_sequence(
             batch,
