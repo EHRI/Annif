@@ -133,6 +133,15 @@ def _ehribert() -> Type[AnnifBackend]:
         raise ValueError("EhriBert not available, cannot use ehribert backend")
 
 
+def _mistral() -> Type[AnnifBackend]:
+    try:
+        from . import mistral
+
+        return mistral.MistralBackend
+    except ImportError:
+        raise ValueError("Mistral not available, cannot use mistral backend")
+
+
 # registry of the above functions
 _backend_fns = {
     "dummy": _dummy,
@@ -151,6 +160,7 @@ _backend_fns = {
     "minilmv2": _minilmv2,
     "ehribert": _ehribert,
     "mdeberta": _mdeberta,
+    "mistral": _mistral,
 }
 
 
