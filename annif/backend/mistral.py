@@ -16,7 +16,7 @@ class MistralBackend(backend.AnnifBackend):
     is_trained = True
     subject_id = 0
     modification_time = None
-    session = None
+    _session = None
     _terms = None
     _terms_rev = None
 
@@ -27,9 +27,11 @@ class MistralBackend(backend.AnnifBackend):
         self._terms_rev = {v: k for k, v in self._terms.items()}
 
         mistral_key = os.environ.get('MISTRAL_KEY')
+        if not mistral_key:
+            self.warning("MISTRAL_KEY environment variable not set")
 
-        self.session = requests.Session()
-        self.session.headers.update({
+        self._session = requests.Session()
+        self._session.headers.update({
             'Content-Type': 'application/json',
             'Accept': 'application/json',
             'Authorization': f'Bearer {mistral_key}'
@@ -77,19 +79,19 @@ class MistralBackend(backend.AnnifBackend):
         )
 
         try:
-            response = self.session.post('https://api.mistral.ai/v1/chat/completions', json=data)
+            response = self._session.post('https://api.mistral.ai/v1/chat/completions', json=data)
             response.raise_for_status()
         except requests.exceptions.RequestException as err:
-            print(f"HTTP request failed: {err}", file=sys.stderr)
+            self.warning(f"HTTP request failed: {err}")
             return []
 
         out = response.json()
         if out['choices']:
             try:
                 text_labels = json.loads(out['choices'][0]['message']['content'])
-                print("Output: {}".format(text_labels), file=sys.stderr)
+                self.debug("Output: {}".format(text_labels))
             except json.JSONDecodeError:
-                print(f"Unable to parse response: {out}", file=sys.stderr)
+                self.warning(f"Unable to parse response: {out}")
                 return []
 
             suggestions = [
@@ -101,7 +103,7 @@ class MistralBackend(backend.AnnifBackend):
                 } for i, text in enumerate(text_labels) if text in self._terms_rev
             ]
 
-            print("Suggestions: {}".format(suggestions), file=sys.stderr)
+            self.debug("Suggestions: {}".format(suggestions))
 
             return [
                 SubjectSuggestion(
@@ -111,5 +113,5 @@ class MistralBackend(backend.AnnifBackend):
             ]
 
         # No data, just return an empty list...
-        print("No suggestions", file=sys.stderr)
+        self.warning("No suggestions")
         return []
