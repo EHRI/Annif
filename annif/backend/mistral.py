@@ -49,9 +49,9 @@ class MistralBackend(backend.AnnifBackend):
                 by "-----" above and below. 
 
                 I want you to select the most appropriate {limit} subject
-                headings that apply to the text and output them 
-                as a JSON list of strings. Do not output anything
-                other than the JSON list, i.e. no notes or apologies.
+                headings that describe the text and return them as a 
+                single JSON list of strings. Do not output anything
+                other than the single JSON list, i.e. no notes or apologies.
 
                 Here are the subject headings:"""
 
