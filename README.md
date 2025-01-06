@@ -13,22 +13,23 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NatLibFi_Annif&metric=alert_status)](https://sonarcloud.io/dashboard?id=NatLibFi_Annif)
 [![docs](https://readthedocs.org/projects/annif/badge/?version=latest)](https://annif.readthedocs.io/en/latest/index.html)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?&label=Tutorial+in+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/NatLibFi/Annif-tutorial/tree/codespaces)
 
 Annif is an automated subject indexing toolkit. It was originally created as
 a statistical automated indexing tool that used metadata from the
 [Finna.fi](https://finna.fi) discovery interface as a training corpus.
 
-This repo contains a rewritten production version of Annif based on the
-[prototype](https://github.com/osma/annif). It is a work in progress, but
-already functional for many common tasks.
+This repository contains a rewritten production version of Annif based on the
+[prototype](https://github.com/osma/annif).
 
-[Finto AI](https://ai.finto.fi/) is a service based on Annif; see the [source code for Finto AI](https://github.com/NatLibFi/FintoAI).
+[Finto AI](https://ai.finto.fi/) is a service based on Annif;
+see a [🤗 Hugging Face Hub collection](https://huggingface.co/collections/NatLibFi/annif-models-65b35fb98b7c508c8e8a1570) of the models that Finto AI uses.
 
 # Basic install
 
 Annif is developed and tested on Linux. If you want to run Annif on Windows or Mac OS, the recommended way is to use Docker (see below) or a Linux virtual machine.
 
-You will need Python 3.9+ to install Annif.
+You will need Python 3.9-3.12 to install Annif.
 
 The recommended way is to install Annif from
 [PyPI](https://pypi.org/project/annif/) into a virtual environment.
@@ -37,16 +38,14 @@ The recommended way is to install Annif from
     source annif-venv/bin/activate
     pip install annif
 
-You will also need NLTK data files:
-
-    python -m nltk.downloader punkt
-
 Start up the application:
 
     annif
 
 See [Getting Started](https://github.com/NatLibFi/Annif/wiki/Getting-started)
-in the wiki for more details.
+for basic usage instructions and
+[Optional features and dependencies](https://github.com/NatLibFi/Annif/wiki/Optional-features-and-dependencies)
+for installation instructions for e.g. fastText and Omikuji backends and for Voikko and spaCy analyzers.
 
 ## Shell compeletions
 Annif supports tab-key completion in bash, zsh and fish shells for commands and options
@@ -73,7 +72,7 @@ For details and usage for other shells see
 [Click documentation](https://click.palletsprojects.com/en/8.1.x/shell-completion/).
 # Docker install
 
-You can use Annif as a pre-built Docker container. Please see the
+You can use Annif as a pre-built Docker container image from [quay.io/natlibfi/annif](https://quay.io/repository/natlibfi/annif) repository. Please see the
 [wiki documentation](https://github.com/NatLibFi/Annif/wiki/Usage-with-Docker)
 for details.
 
@@ -112,13 +111,14 @@ Enter the virtual environment:
 
     poetry shell
 
-You will also need NLTK data files:
-
-    python -m nltk.downloader punkt
-
 Start up the application:
 
     annif
+
+# Demo install in Codespaces
+Annif can be tried out in the [GitHub Codespaces](https://docs.github.com/en/codespaces). Just open a page for configuring a new codespace via the badge below, start the codespace from the green "Create codespace" button, and a terminal session will start in your browser with the contents of the [Annif-tutorial](https://github.com/NatLibFi/Annif-tutorial) repository:
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/NatLibFi/Annif-tutorial/tree/codespaces)
 
 # Getting help
 
@@ -126,13 +126,13 @@ Many resources are available:
 
  * [Usage documentation in the wiki](https://github.com/NatLibFi/Annif/wiki)
  * [Annif tutorial](https://github.com/NatLibFi/Annif-tutorial) for learning to use Annif
- * [annif-users](https://groups.google.com/forum/#!forum/annif-users) discussion forum
+ * [annif-users](https://groups.google.com/forum/#!forum/annif-users) discussion forum; please use this as a channel for questions instead of personal e-mails to developers
  * [Internal API documentation](https://annif.readthedocs.io) on ReadTheDocs
  * [annif.org](https://annif.org) project web site
 
 # Publications / How to cite
 
-Two articles about Annif have been published in peer-reviewed Open Access
+See below for some articles about Annif in peer-reviewed Open Access
 journals. The software itself is also archived on Zenodo and
 has a [citable DOI](https://doi.org/10.5281/zenodo.5654173).
 
@@ -142,6 +142,24 @@ See "Cite this repository" in the details of the repository.
 
 ## Annif articles
 <ul>
+<li>
+Golub, K.; Suominen, O.; Mohammed, A.; Aagaard, H.; Osterman, O, 2024.
+Automated Dewey Decimal Classification of Swedish library metadata using Annif software.
+Journal of Documentation, in press.
+https://doi.org/10.1108/JD-01-2022-0026
+<details>
+<summary>See BibTex</summary>
+
+    @article{golub2024annif,
+      title={Automated Dewey Decimal Classification of Swedish library metadata using Annif software},
+      author={Golub, Koraljka and Suominen, Osma and Mohammed, Ahmed Taiye and Aagaard, Harriet and Osterman, Olof},
+      journal={J. Doc.},
+      year={in press},
+      doi = {10.1108/JD-01-2022-0026},
+      url={https://www.emerald.com/insight/content/doi/10.1108/JD-01-2022-0026},
+    }
+</details>
+</li>
 <li>
 Suominen, O.; Inkinen, J.; Lehtinen, M., 2022.
 Annif and Finto AI: Developing and Implementing Automated Subject Indexing.
@@ -205,13 +223,24 @@ https://doi.org/10.18352/lq.10285
 
 # License
 
-The code in this repository is licensed under Apache License 2.0, except for the
-dependencies included under `annif/static/css` and `annif/static/js`,
-which have their own licenses, see the file headers for details.
-Please note that the [YAKE](https://github.com/LIAAD/yake) library is licended
-under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt), while Annif is
-licensed under the Apache License 2.0. The licenses are compatible, but
-depending on legal interpretation, the terms of the GPLv3 (for example the
-requirement to publish corresponding source code when publishing an executable
-application) may be considered to apply to the whole of Annif+Yake if you
-decide to install the optional Yake dependency.
+The code in this repository is licensed under Apache License 2.0, except for
+the dependencies included under `annif/static/css` and `annif/static/js`,
+which have their own licenses; see the file headers for details.
+
+Please note that the [YAKE](https://github.com/LIAAD/yake) library is
+licensed under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.txt) and the
+[EstNLTK-core](https://github.com/estnltk/estnltk/tree/main/estnltk_core)
+library is licensed under
+[GPLv2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html), while Annif
+itself is licensed under the Apache License 2.0. It is commonly accepted
+that the GPLv3 and Apache 2.0 licenses are compatible at least in one
+direction (GPLv3 is more restrictive than the Apache License), while the
+compatibility between GPLv2 and Apache 2.0 licenses is a more difficult
+question with arguments made both for and against license compatibility;
+obviously it also depends on the legal environment. The Annif developers
+make no legal claims; we simply provide the software and allow the user to
+install these optional extensions if they consider it appropriate. Depending
+on legal interpretation, the terms of the GPL (for example the requirement
+to publish corresponding source code when publishing an executable
+application) may be considered to apply to the whole of Annif+extensions if
+you decide to install the optional Yake and/or EstNLTK dependencies.

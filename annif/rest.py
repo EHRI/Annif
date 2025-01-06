@@ -1,5 +1,6 @@
 """Definitions for REST API operations. These are wired via Connexion to
 methods defined in the OpenAPI specification."""
+
 from __future__ import annotations
 
 import importlib
@@ -8,13 +9,12 @@ from typing import TYPE_CHECKING, Any
 import connexion
 
 import annif.registry
+import annif.simplemma_util
 from annif.corpus import Document, DocumentList, SubjectSet
 from annif.exception import AnnifException
 from annif.project import Access
 
 if TYPE_CHECKING:
-    from datetime import datetime
-
     from connexion.lifecycle import ConnexionResponse
 
     from annif.corpus.subject import SubjectIndex
@@ -42,10 +42,11 @@ def server_error(
     )
 
 
-def show_info() -> dict[str, str]:
+def show_info() -> tuple:
     """return version of annif and a title for the api according to OpenAPI spec"""
 
-    return {"title": "Annif REST API", "version": importlib.metadata.version("annif")}
+    result = {"title": "Annif REST API", "version": importlib.metadata.version("annif")}
+    return result, 200, {"Content-Type": "application/json"}
 
 
 def language_not_supported_error(lang: str) -> ConnexionResponse:
@@ -58,15 +59,16 @@ def language_not_supported_error(lang: str) -> ConnexionResponse:
     )
 
 
-def list_projects() -> dict[str, list[dict[str, str | dict | bool | datetime | None]]]:
+def list_projects() -> tuple:
     """return a dict with projects formatted according to OpenAPI spec"""
 
-    return {
+    result = {
         "projects": [
             proj.dump()
             for proj in annif.registry.get_projects(min_access=Access.public).values()
         ]
     }
+    return result, 200, {"Content-Type": "application/json"}
 
 
 def show_project(
@@ -78,7 +80,31 @@ def show_project(
         project = annif.registry.get_project(project_id, min_access=Access.hidden)
     except ValueError:
         return project_not_found_error(project_id)
-    return project.dump()
+    return project.dump(), 200, {"Content-Type": "application/json"}
+
+
+def detect_language(body: dict[str, Any]):
+    """return scores for detected languages formatted according to Swagger spec"""
+
+    text = body.get("text")
+    languages = body.get("languages")
+
+    try:
+        proportions = annif.simplemma_util.detect_language(text, tuple(languages))
+    except ValueError:
+        return connexion.problem(
+            status=400,
+            title="Bad Request",
+            detail="unsupported candidate languages",
+        )
+
+    result = {
+        "results": [
+            {"language": lang if lang != "unk" else None, "score": score}
+            for lang, score in proportions.items()
+        ]
+    }
+    return result, 200, {"Content-Type": "application/json"}
 
 
 def _suggestion_to_dict(
@@ -123,7 +149,7 @@ def suggest(
 
     if _is_error(result):
         return result
-    return result[0]
+    return result[0], 200, {"Content-Type": "application/json"}
 
 
 def suggest_batch(
@@ -141,7 +167,7 @@ def suggest_batch(
         return result
     for document_results, document in zip(result, documents):
         document_results["document_id"] = document.get("document_id")
-    return result
+    return result, 200, {"Content-Type": "application/json"}
 
 
 def _suggest(
@@ -213,4 +239,4 @@ def learn(
     except AnnifException as err:
         return server_error(err)
 
-    return None, 204
+    return None, 204, {"Content-Type": "application/json"}

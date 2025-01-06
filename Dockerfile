@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bookworm
+FROM python:3.12-slim-bookworm
 LABEL org.opencontainers.image.authors="grp-natlibfi-annif@helsinki.fi"
 SHELL ["/bin/bash", "-c"]
 
@@ -28,7 +28,7 @@ RUN echo "Installing dependencies for optional features: $optional_dependencies"
 	&& rm -rf /root/.cache/pypoetry  # No need for cache because of poetry.lock
 
 # Download nltk data
-RUN python -m nltk.downloader punkt -d /usr/share/nltk_data
+RUN python -m nltk.downloader punkt_tab -d /usr/share/nltk_data
 
 # Download spaCy models, if the optional feature was selected
 ARG spacy_models=en_core_web_sm
@@ -50,8 +50,11 @@ RUN annif completion --bash >> /etc/bash.bashrc  # Enable tab completion
 RUN groupadd -g 998 annif_user && \
     useradd -r -u 998 -g annif_user annif_user && \
     chmod -R a+rX /Annif && \
-    mkdir -p /Annif/tests/data && \
+    mkdir -p /Annif/tests/data /Annif/projects.d && \
     chown -R annif_user:annif_user /annif-projects /Annif/tests/data
 USER annif_user
+ENV HF_HOME="/tmp"
+
+ENV GUNICORN_CMD_ARGS="--worker-class uvicorn.workers.UvicornWorker"
 
 CMD annif
