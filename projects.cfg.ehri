@@ -1,0 +1,92 @@
+# Example configuration for Annif
+
+[mdeberta-ehri]
+name=EHRI mDeBERTa
+language=en
+backend=mdeberta
+vocab=ehri_sm
+limit=5
+
+[bertft-ehri]
+name=EHRI Bert Fine-tuned
+language=en
+backend=ehribert
+vocab=ehri_sm
+limit=5
+threshold=0.2
+
+[minilmv2-ehri]
+name=EHRI MiniLM2
+language=en
+backend=minilmv2
+vocab=ehri_sm
+limit=5
+
+[xlmroberta-ehri]
+name=EHRI XlmRoberta
+language=en
+backend=xlmroberta
+vocab=ehri_sm
+limit=5
+
+[tfidf-ehri]
+name=TF-IDF EHRI
+language=en
+backend=tfidf
+#analyzer=simplemma(en)
+analyzer=snowball(english)
+limit=5
+vocab=ehri_sm
+
+[fasttext-ehri]
+name=fastText EHRI
+language=en
+backend=fasttext
+#analyzer=simplemma(en)
+analyzer=snowball(english)
+dim=500
+lr=0.25
+epoch=30
+loss=hs
+limit=5
+chunksize=24
+vocab=ehri_sm
+
+[mllm-ehri]
+name=EHRI MLLM English
+language=en
+backend=mllm
+#analyzer=simplemma(en)
+analyzer=snowball(english)
+vocab=ehri_sm
+
+[nn-ehri]
+name=EHRI NN
+language=en
+backend=nn_ensemble
+analyzer=snowball(english)
+#analyzer=simplemma(en)
+vocab=ehri_sm
+sources=tfidf-ehri,mllm-ehri,fasttext-ehri,omikuji-parabel-ehri
+limit=5
+nodes=200
+dropout_rate=0.2
+epochs=20
+
+[ensemble-ehri]
+name=Ensemble EHRI English
+language=en
+vocab=ehri_sm
+backend=ensemble
+sources=tfidf-ehri,fasttext-ehri,mllm-ehri,omikuji-parabel-ehri
+limit=5
+
+[omikuji-parabel-ehri]
+name=Omikuji Parabel EHRI
+language=en
+backend=omikuji
+#analyzer=simplemma(en)
+analyzer=snowball(english)
+vocab=ehri_sm
+limit=5
+
