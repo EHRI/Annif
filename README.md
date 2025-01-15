@@ -1,3 +1,11 @@
+
+# Please Note
+
+This branch contains a version of Annif with additional backends developed for the 
+paper "Multilingual Automated Subject Indexing: a comparative study of LLMs vs 
+alternative approaches in the context of the EHRI project". The authors thank the
+developers of Annif for their work on this project.
+
 <img src="https://annif.org/static/img/annif-RGB.svg" width="150">
 
 [![DOI](https://zenodo.org/badge/100936800.svg)](https://zenodo.org/badge/latestdoi/100936800)
